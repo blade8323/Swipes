@@ -11,49 +11,44 @@ import UIKit
 class ViewController: UIViewController {
 
     @IBOutlet var label: UILabel!
-//    private var gestureStartPoint: CGPoint!
-//    private static let minimumGestureLength = Float(25.0)
-//    private static let maximumVariance = Float(5.0)
     
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
-        let vertical = UISwipeGestureRecognizer(target: self, action: #selector(reportVerticalSwipe(_: )))
-        vertical.direction = [.up, .down]
-        view.addGestureRecognizer(vertical)
-        
-        let horizontal = UISwipeGestureRecognizer(target: self, action: #selector(reportHorizontalSwipe(_: )))
-        horizontal.direction = [.left, .right]
-        view.addGestureRecognizer(horizontal)
+        for touchCount in 0..<5 {
+            let vertical = UISwipeGestureRecognizer(target: self, action: #selector(ViewController.reportVerticalSwipe(_:)))
+            vertical.direction = [.up, .down]
+            vertical.numberOfTouchesRequired = touchCount
+            view.addGestureRecognizer(vertical)
+
+            let horisontal = UISwipeGestureRecognizer(target: self, action: #selector(ViewController.reportHorizontalSwipe(_:)))
+            horisontal.direction = [.left, .right]
+            horisontal.numberOfTouchesRequired = touchCount
+            view.addGestureRecognizer(horisontal)
+        }
     }
 
-//    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-//        if let touch = touches.first {
-//            gestureStartPoint = touch.location(in: self.view)
-//        }
-//    }
-//
-//    override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
-//        if let touch = touches.first, let gestureStartPoint = self.gestureStartPoint {
-//            let currentPosition = touch.location(in: self.view)
-//            let deltaX = fabsf(Float(gestureStartPoint.x - currentPosition.x))
-//            let deltaY = fabsf(Float(gestureStartPoint.y - currentPosition.y))
-//            if deltaX >= ViewController.minimumGestureLength && deltaY <= ViewController.maximumVariance {
-//                label.text = "Horizontal swipe detected"
-//                DispatchQueue.main.asyncAfter(deadline: .now() + Double(Int64(2 * NSEC_PER_SEC)) / Double(NSEC_PER_SEC)) {
-//                    self.label.text = ""
-//                }
-//            } else if deltaY >= ViewController.minimumGestureLength && deltaX <= ViewController.maximumVariance {
-//                label.text = "Vertical swipe detected"
-//                DispatchQueue.main.asyncAfter(deadline: .now() + Double(Int64(2 * NSEC_PER_SEC)) / Double(NSEC_PER_SEC)) {
-//                    self.label.text = ""
-//                }
-//            }
-//        }
-//    }
+    func descriptionFortouchCount(_ touchCount: Int) -> String {
+        switch touchCount {
+        case 1:
+            return "Single"
+        case 2:
+            return "Double"
+        case 3:
+            return "Triple"
+        case 4:
+            return "Quadruple"
+        case 5:
+            return "Quintuple"
+        default:
+            return ""
+        }
+    }
 
     @objc func reportHorizontalSwipe(_ recognizer: UIGestureRecognizer) {
         label.text = "Horizontal swipe detected"
+        let count = descriptionFortouchCount(recognizer.numberOfTouches)
+        label.text = "\(count)-finger horizontal swipe detected"
         DispatchQueue.main.asyncAfter(deadline: .now() + Double(Int64(2 * NSEC_PER_SEC)) / Double(NSEC_PER_SEC)) {
             self.label.text = ""
         }
@@ -61,9 +56,12 @@ class ViewController: UIViewController {
     
     @objc func reportVerticalSwipe(_ recognizer: UIGestureRecognizer) {
         label.text = "Vertical swipe detected"
+        let count = descriptionFortouchCount(recognizer.numberOfTouches)
+        label.text = "\(count)-finger vertical swipe detected"
         DispatchQueue.main.asyncAfter(deadline: .now() + Double(Int64(2 * NSEC_PER_SEC)) / Double(NSEC_PER_SEC)) {
             self.label.text = ""
         }
     }
+    
 }
 
